@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Investment Buckets — Stocks & ETFs</title>
+  <style>
+    :root{
+      --bg:#0f1724; --card:#0b1220; --muted:#98a0b3; --accent:#4f46e5; --accent-2:#06b6d4; --glass: rgba(255,255,255,0.03);
+      --card-radius:14px; --gap:18px; --maxw:1100px;
+      color-scheme: dark;
+    }
+    *{box-sizing:border-box}
+    body{font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:linear-gradient(180deg,#071022 0%, #081429 50%); color:#e6eef8; margin:0; padding:40px; display:flex; justify-content:center}
+    .wrap{width:100%; max-width:var(--maxw)}
+    header{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;color:white;box-shadow:0 6px 20px rgba(79,70,229,0.18)}
+    h1{margin:0;font-size:20px}
+    p.lead{margin:0;color:var(--muted);font-size:13px}
+
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:18px;border-radius:var(--card-radius);box-shadow: 0 6px 30px rgba(2,6,23,0.6); border:1px solid rgba(255,255,255,0.02)}
+
+    .controls{display:flex;gap:12px;align-items:center;margin:16px 0}
+    .search{flex:1;display:flex;background:var(--glass);padding:10px;border-radius:12px;align-items:center;border:1px solid rgba(255,255,255,0.02)}
+    .search input{flex:1;background:transparent;border:0;color:inherit;outline:none;font-size:14px}
+    .btn{background:linear-gradient(90deg,var(--accent),var(--accent-2));padding:10px 14px;border-radius:10px;color:white;border:0;cursor:pointer}
+
+    table{width:100%; border-collapse:separate;border-spacing:0 10px}
+    thead th{font-size:13px;text-align:left;color:var(--muted);padding:10px 12px}
+    tbody tr{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));backdrop-filter: blur(6px);border-radius:12px}
+    td{padding:14px 12px;vertical-align:top;border-left:4px solid transparent}
+    td.bucket{width:220px;font-weight:600}
+    .chips{display:flex;gap:8px;flex-wrap:wrap}
+    .chip{background:rgba(255,255,255,0.02);padding:6px 8px;border-radius:8px;font-size:13px;color:var(--muted)}
+
+    a.ticker{color:inherit;text-decoration:none;display:inline-block;padding:4px 6px;border-radius:6px;font-weight:600;background:rgba(255,255,255,0.01)}
+    a.ticker:hover{outline: 2px solid rgba(79,70,229,0.18);text-decoration:none}
+    .etf{font-weight:600;color:var(--accent-2)}
+
+    .foot{margin-top:16px;color:var(--muted);font-size:13px}
+
+    @media (max-width:900px){.controls{flex-direction:column;align-items:stretch}.wrap{padding:0 12px} td.bucket{width:160px}}
+
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">IB</div>
+      <div>
+        <h1>Investment Buckets — Stocks & ETFs</h1>
+        <p class="lead">Top large-cap stocks and relevant ETFs grouped by investment theme. Click a ticker to open it on Yahoo Finance.</p>
+      </div>
+    </header>
+
+    <div class="card">
+      <div class="controls">
+        <div class="search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="opacity:0.8;margin-right:8px"><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></circle></svg>
+          <input id="q" placeholder="Filter buckets or tickers (start typing)" oninput="filterTable()" />
+        </div>
+        <button class="btn" onclick="resetFilter()">Reset</button>
+      </div>
+
+      <div style="overflow:auto">
+      <table id="bucketsTable" aria-label="Investment buckets table">
+        <thead>
+          <tr>
+            <th style="width:220px">Bucket</th>
+            <th>Top Stocks (click ticker)</th>
+            <th>Relevant ETFs</th>
+          </tr>
+        </thead>
+        <tbody>
+
+<!-- Row: Broad Market -->
+<tr>
+  <td class="bucket">Broad Market / Index</td>
+  <td>
+    <div class="chips">
+      <span class="chip"><a class="ticker" href="https://finance.yahoo.com/quote/VOO" target="_blank" rel="noopener">VOO</a> (ETF)</span>
+      <span class="chip"><a class="ticker" href="https://finance.yahoo.com/quote/SPY" target="_blank" rel="noopener">SPY</a></span>
+      <span class="chip"><a class="ticker" href="https://finance.yahoo.com/quote/QQQ" target="_blank" rel="noopener">QQQ</a></span>
+    </div>
+  </td>
+  <td><a class="ticker etf" href="https://finance.yahoo.com/quote/VOO" target="_blank">VOO</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/SPY" target="_blank">SPY</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/QQQ" target="_blank">QQQ</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/VTI" target="_blank">VTI</a></td>
+</tr>
+
+<!-- Row: Construction -->
+<tr>
+  <td class="bucket">Construction / Infrastructure</td>
+  <td>
+    <div class="chips">
+      <a class="ticker" href="https://finance.yahoo.com/quote/CAT" target="_blank">CAT</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/DE" target="_blank">DE</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/VMC" target="_blank">VMC</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/MLM" target="_blank">MLM</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/JCI" target="_blank">JCI</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/DHI" target="_blank">DHI</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/PHM" target="_blank">PHM</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/KBH" target="_blank">KBH</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/OSK" target="_blank">OSK</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/LEN" target="_blank">LEN</a>
+    </div>
+  </td>
+  <td><a class="ticker etf" href="https://finance.yahoo.com/quote/PAVE" target="_blank">PAVE</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/ITB" target="_blank">ITB</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/XHB" target="_blank">XHB</a></td>
+</tr>
+
+<!-- Row: Metals -->
+<tr>
+  <td class="bucket">Metals & Mining</td>
+  <td>
+    <div class="chips">
+      <a class="ticker" href="https://finance.yahoo.com/quote/NEM" target="_blank">NEM</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/GOLD" target="_blank">GOLD</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/WPM" target="_blank">WPM</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/PAAS" target="_blank">PAAS</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/HL" target="_blank">HL</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/FCX" target="_blank">FCX</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/BHP" target="_blank">BHP</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/RIO" target="_blank">RIO</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/FCX" target="_blank">FCX</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/SBMRY" target="_blank">Sibanye Stillwater</a>
+    </div>
+  </td>
+  <td><a class="ticker etf" href="https://finance.yahoo.com/quote/GLD" target="_blank">GLD</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/SLV" target="_blank">SLV</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/GDX" target="_blank">GDX</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/PICK" target="_blank">PICK</a></td>
+</tr>
+
+<!-- Row: Energy -->
+<tr>
+  <td class="bucket">Energy / Oil & Gas</td>
+  <td>
+    <div class="chips">
+      <a class="ticker" href="https://finance.yahoo.com/quote/XOM" target="_blank">XOM</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/CVX" target="_blank">CVX</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/COP" target="_blank">COP</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/SLB" target="_blank">SLB</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/BP" target="_blank">BP</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/TOT" target="_blank">TOT</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/EOG" target="_blank">EOG</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/OXY" target="_blank">OXY</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/KMI" target="_blank">KMI</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/PSX" target="_blank">PSX</a>
+    </div>
+  </td>
+  <td><a class="ticker etf" href="https://finance.yahoo.com/quote/XLE" target="_blank">XLE</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/VDE" target="_blank">VDE</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/USO" target="_blank">USO</a></td>
+</tr>
+
+<!-- Row: Regular Tech -->
+<tr>
+  <td class="bucket">Regular Tech</td>
+  <td>
+    <div class="chips">
+      <a class="ticker" href="https://finance.yahoo.com/quote/MSFT" target="_blank">MSFT</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/ORCL" target="_blank">ORCL</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/ADBE" target="_blank">ADBE</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/IBM" target="_blank">IBM</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/CSCO" target="_blank">CSCO</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/CRM" target="_blank">CRM</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/SAP" target="_blank">SAP</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/TXN" target="_blank">TXN</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/AVGO" target="_blank">AVGO</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/AAPL" target="_blank">AAPL</a>
+    </div>
+  </td>
+  <td><a class="ticker etf" href="https://finance.yahoo.com/quote/XLK" target="_blank">XLK</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/VGT" target="_blank">VGT</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/IGV" target="_blank">IGV</a></td>
+</tr>
+
+<!-- Row: AI / Big Tech -->
+<tr>
+  <td class="bucket">AI / Big Tech</td>
+  <td>
+    <div class="chips">
+      <a class="ticker" href="https://finance.yahoo.com/quote/GOOGL" target="_blank">GOOGL</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/META" target="_blank">META</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/AMZN" target="_blank">AMZN</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/NVDA" target="_blank">NVDA</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/MSFT" target="_blank">MSFT</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/PLTR" target="_blank">PLTR</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/SNOW" target="_blank">SNOW</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/CRM" target="_blank">CRM</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/SHOP" target="_blank">SHOP</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/MDB" target="_blank">MDB</a>
+    </div>
+  </td>
+  <td><a class="ticker etf" href="https://finance.yahoo.com/quote/BOTZ" target="_blank">BOTZ</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/AIQ" target="_blank">AIQ</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/ARKK" target="_blank">ARKK</a></td>
+</tr>
+
+<!-- Row: Semiconductors -->
+<tr>
+  <td class="bucket">Semiconductors / Chips</td>
+  <td>
+    <div class="chips">
+      <a class="ticker" href="https://finance.yahoo.com/quote/NVDA" target="_blank">NVDA</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/INTC" target="_blank">INTC</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/AMD" target="_blank">AMD</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/TSM" target="_blank">TSM</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/ASML" target="_blank">ASML</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/MU" target="_blank">MU</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/QCOM" target="_blank">QCOM</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/AVGO" target="_blank">AVGO</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/NXPI" target="_blank">NXPI</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/ON" target="_blank">ON</a>
+    </div>
+  </td>
+  <td><a class="ticker etf" href="https://finance.yahoo.com/quote/SOXX" target="_blank">SOXX</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/SMH" target="_blank">SMH</a></td>
+</tr>
+
+<!-- Row: Housing / Home Goods -->
+<tr>
+  <td class="bucket">Housing / Home Goods</td>
+  <td>
+    <div class="chips">
+      <a class="ticker" href="https://finance.yahoo.com/quote/HD" target="_blank">HD</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/LOW" target="_blank">LOW</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/W" target="_blank">W</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/SHW" target="_blank">SHW</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/RH" target="_blank">RH</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/MAS" target="_blank">MAS</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/LEN" target="_blank">LEN</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/DHI" target="_blank">DHI</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/SWK" target="_blank">SWK</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/WHR" target="_blank">WHR</a>
+    </div>
+  </td>
+  <td><a class="ticker etf" href="https://finance.yahoo.com/quote/XHB" target="_blank">XHB</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/ITB" target="_blank">ITB</a></td>
+</tr>
+
+<!-- Row: Airlines & Aerospace -->
+<tr>
+  <td class="bucket">Planes / Airlines & Aerospace</td>
+  <td>
+    <div class="chips">
+      <a class="ticker" href="https://finance.yahoo.com/quote/BA" target="_blank">BA</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/LMT" target="_blank">LMT</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/RTX" target="_blank">RTX</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/GE" target="_blank">GE</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/NOC" target="_blank">NOC</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/UAL" target="_blank">UAL</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/DAL" target="_blank">DAL</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/AAL" target="_blank">AAL</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/LUV" target="_blank">LUV</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/ALK" target="_blank">ALK</a>
+    </div>
+  </td>
+  <td><a class="ticker etf" href="https://finance.yahoo.com/quote/JETS" target="_blank">JETS</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/ITA" target="_blank">ITA</a></td>
+</tr>
+
+<!-- Row: Cruises & Travel -->
+<tr>
+  <td class="bucket">Cruises, Travel & Holidays</td>
+  <td>
+    <div class="chips">
+      <a class="ticker" href="https://finance.yahoo.com/quote/CCL" target="_blank">CCL</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/RCL" target="_blank">RCL</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/NCLH" target="_blank">NCLH</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/BKNG" target="_blank">BKNG</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/ABNB" target="_blank">ABNB</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/HLT" target="_blank">HLT</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/MAR" target="_blank">MAR</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/LVS" target="_blank">LVS</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/WYNN" target="_blank">WYNN</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/IHG" target="_blank">IHG</a>
+    </div>
+  </td>
+  <td><a class="ticker etf" href="https://finance.yahoo.com/quote/PEJ" target="_blank">PEJ</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/XLY" target="_blank">XLY</a></td>
+</tr>
+
+<!-- Row: Financials -->
+<tr>
+  <td class="bucket">Financials / Banks / Insurance</td>
+  <td>
+    <div class="chips">
+      <a class="ticker" href="https://finance.yahoo.com/quote/JPM" target="_blank">JPM</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/BAC" target="_blank">BAC</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/C" target="_blank">C</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/GS" target="_blank">GS</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/MS" target="_blank">MS</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/WFC" target="_blank">WFC</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/AXP" target="_blank">AXP</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/BLK" target="_blank">BLK</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/AIG" target="_blank">AIG</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/SCHW" target="_blank">SCHW</a>
+    </div>
+  </td>
+  <td><a class="ticker etf" href="https://finance.yahoo.com/quote/XLF" target="_blank">XLF</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/VFH" target="_blank">VFH</a></td>
+</tr>
+
+<!-- Row: Healthcare -->
+<tr>
+  <td class="bucket">Healthcare / Pharma / Biotech</td>
+  <td>
+    <div class="chips">
+      <a class="ticker" href="https://finance.yahoo.com/quote/JNJ" target="_blank">JNJ</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/PFE" target="_blank">PFE</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/MRK" target="_blank">MRK</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/ABBV" target="_blank">ABBV</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/LLY" target="_blank">LLY</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/GILD" target="_blank">GILD</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/AMGN" target="_blank">AMGN</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/BMY" target="_blank">BMY</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/MRNA" target="_blank">MRNA</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/BIIB" target="_blank">BIIB</a>
+    </div>
+  </td>
+  <td><a class="ticker etf" href="https://finance.yahoo.com/quote/XLV" target="_blank">XLV</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/XBI" target="_blank">XBI</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/IBB" target="_blank">IBB</a></td>
+</tr>
+
+<!-- Row: Consumer Staples -->
+<tr>
+  <td class="bucket">Consumer Staples</td>
+  <td>
+    <div class="chips">
+      <a class="ticker" href="https://finance.yahoo.com/quote/KO" target="_blank">KO</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/PEP" target="_blank">PEP</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/PG" target="_blank">PG</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/WMT" target="_blank">WMT</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/COST" target="_blank">COST</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/CL" target="_blank">CL</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/KMB" target="_blank">KMB</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/MDLZ" target="_blank">MDLZ</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/GIS" target="_blank">GIS</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/UL" target="_blank">UL</a>
+    </div>
+  </td>
+  <td><a class="ticker etf" href="https://finance.yahoo.com/quote/XLP" target="_blank">XLP</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/VDC" target="_blank">VDC</a></td>
+</tr>
+
+<!-- Row: Utilities / Renewables -->
+<tr>
+  <td class="bucket">Utilities / Renewable Energy</td>
+  <td>
+    <div class="chips">
+      <a class="ticker" href="https://finance.yahoo.com/quote/NEE" target="_blank">NEE</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/D" target="_blank">D</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/XEL" target="_blank">XEL</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/DUK" target="_blank">DUK</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/SO" target="_blank">SO</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/ENPH" target="_blank">ENPH</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/FSLR" target="_blank">FSLR</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/RUN" target="_blank">RUN</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/BEP" target="_blank">BEP</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/AES" target="_blank">AES</a>
+    </div>
+  </td>
+  <td><a class="ticker etf" href="https://finance.yahoo.com/quote/XLU" target="_blank">XLU</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/ICLN" target="_blank">ICLN</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/TAN" target="_blank">TAN</a></td>
+</tr>
+
+<!-- Row: Telecoms -->
+<tr>
+  <td class="bucket">Telecommunications</td>
+  <td>
+    <div class="chips">
+      <a class="ticker" href="https://finance.yahoo.com/quote/T" target="_blank">T</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/VZ" target="_blank">VZ</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/TMUS" target="_blank">TMUS</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/ORAN" target="_blank">ORAN</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/TEF" target="_blank">TEF</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/BCE" target="_blank">BCE</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/AMX" target="_blank">AMX</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/NTTYY" target="_blank">NTTYY</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/CHL" target="_blank">CHL</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/ORAN" target="_blank">ORAN</a>
+    </div>
+  </td>
+  <td><a class="ticker etf" href="https://finance.yahoo.com/quote/IYZ" target="_blank">IYZ</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/XLC" target="_blank">XLC</a></td>
+</tr>
+
+<!-- Row: Consumer Discretionary -->
+<tr>
+  <td class="bucket">Consumer Discretionary / Retail</td>
+  <td>
+    <div class="chips">
+      <a class="ticker" href="https://finance.yahoo.com/quote/AMZN" target="_blank">AMZN</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/TSLA" target="_blank">TSLA</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/MCD" target="_blank">MCD</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/NKE" target="_blank">NKE</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/TGT" target="_blank">TGT</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/SBUX" target="_blank">SBUX</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/TJX" target="_blank">TJX</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/ULTA" target="_blank">ULTA</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/HD" target="_blank">HD</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/LOW" target="_blank">LOW</a>
+    </div>
+  </td>
+  <td><a class="ticker etf" href="https://finance.yahoo.com/quote/XLY" target="_blank">XLY</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/VCR" target="_blank">VCR</a></td>
+</tr>
+
+<!-- Row: Real Estate / REITs -->
+<tr>
+  <td class="bucket">Real Estate / REITs</td>
+  <td>
+    <div class="chips">
+      <a class="ticker" href="https://finance.yahoo.com/quote/SPG" target="_blank">SPG</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/PLD" target="_blank">PLD</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/O" target="_blank">O</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/VICI" target="_blank">VICI</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/AMT" target="_blank">AMT</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/EQIX" target="_blank">EQIX</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/DLR" target="_blank">DLR</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/PSA" target="_blank">PSA</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/WELL" target="_blank">WELL</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/AVB" target="_blank">AVB</a>
+    </div>
+  </td>
+  <td><a class="ticker etf" href="https://finance.yahoo.com/quote/VNQ" target="_blank">VNQ</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/XLRE" target="_blank">XLRE</a></td>
+</tr>
+
+<!-- Row: Emerging Markets -->
+<tr>
+  <td class="bucket">Emerging Markets / International</td>
+  <td>
+    <div class="chips">
+      <a class="ticker" href="https://finance.yahoo.com/quote/BABA" target="_blank">BABA</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/INFY" target="_blank">INFY</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/MELI" target="_blank">MELI</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/NIO" target="_blank">NIO</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/BIDU" target="_blank">BIDU</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/PDD" target="_blank">PDD</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/VALE" target="_blank">VALE</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/HDB" target="_blank">HDB</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/SE" target="_blank">SE</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/TSM" target="_blank">TSM</a>
+    </div>
+  </td>
+  <td><a class="ticker etf" href="https://finance.yahoo.com/quote/VWO" target="_blank">VWO</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/EEM" target="_blank">EEM</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/IXUS" target="_blank">IXUS</a></td>
+</tr>
+
+<!-- Row: Commodities & Agriculture -->
+<tr>
+  <td class="bucket">Commodities & Agriculture</td>
+  <td>
+    <div class="chips">
+      <a class="ticker" href="https://finance.yahoo.com/quote/ADM" target="_blank">ADM</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/MOS" target="_blank">MOS</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/NTR" target="_blank">NTR</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/DE" target="_blank">DE</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/CF" target="_blank">CF</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/BG" target="_blank">BG</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/CTVA" target="_blank">CTVA</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/AGCO" target="_blank">AGCO</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/IPI" target="_blank">IPI</a>
+      <a class="ticker" href="https://finance.yahoo.com/quote/TSN" target="_blank">TSN</a>
+    </div>
+  </td>
+  <td><a class="ticker etf" href="https://finance.yahoo.com/quote/DBA" target="_blank">DBA</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/MOO" target="_blank">MOO</a>, <a class="ticker etf" href="https://finance.yahoo.com/quote/DBC" target="_blank">DBC</a></td>
+</tr>
+
+        </tbody>
+      </table>
+      </div>
+
+      <div class="foot">Tip: Click any ticker to open its Yahoo Finance page. Want CSV export or a different broker link (e.g., Google Finance)? Ask and I’ll add it.</div>
+    </div>
+  </div>
+
+<script>
+function filterTable(){
+  const q = document.getElementById('q').value.toLowerCase().trim();
+  const rows = document.querySelectorAll('#bucketsTable tbody tr');
+  rows.forEach(r=>{
+    const text = r.innerText.toLowerCase();
+    r.style.display = text.includes(q) ? '' : 'none';
+  })
+}
+function resetFilter(){document.getElementById('q').value='';filterTable()}
+</script>
+</body>
+</html>
